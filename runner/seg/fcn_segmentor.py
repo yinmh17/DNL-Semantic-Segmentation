@@ -30,7 +30,6 @@ class FCNSegmentor(object):
         self.data_time = AverageMeter()
         self.train_losses = DictAverageMeter()
         self.val_losses = DictAverageMeter()
-        self.seg_running_score = SegRunningScore(configer)
         self.seg_visualizer = SegVisualizer(configer)
         self.seg_model_manager = ModelManager(configer)
         self.seg_data_loader = DataLoader(configer)
@@ -47,12 +46,9 @@ class FCNSegmentor(object):
     def _init_model(self):
         self.seg_net = self.seg_model_manager.get_seg_model()
         self.seg_net = RunnerHelper.load_net(self, self.seg_net)
-
         self.optimizer, self.scheduler = Trainer.init(self._get_parameters(), self.configer.get('solver'))
-
         self.train_loader = self.seg_data_loader.get_trainloader()
         self.val_loader = self.seg_data_loader.get_valloader()
-
         self.loss = self.seg_model_manager.get_seg_loss()
 
     def _get_parameters(self):

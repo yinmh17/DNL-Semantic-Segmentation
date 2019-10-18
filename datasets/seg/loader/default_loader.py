@@ -10,6 +10,7 @@ from torch.utils import data
 from exts.tools.parallel.data_container import DataContainer
 from tools.helper.image_helper import ImageHelper
 from tools.util.logger import Logger as Log
+from tools.util.zipreader import ZipReader
 
 
 class DefaultLoader(data.Dataset):
@@ -20,6 +21,7 @@ class DefaultLoader(data.Dataset):
         self.img_transform = img_transform
         self.label_transform = label_transform
         self.img_list, self.label_list = self.__list_dirs(root_dir, dataset)
+        Log.info("{}/{} img count {}".format(root_dir, dataset, len(self.img_list)))
 
     def __len__(self):
         return len(self.img_list)
@@ -93,11 +95,23 @@ class DefaultLoader(data.Dataset):
         image_dir = os.path.join(root_dir, dataset, 'image')
         label_dir = os.path.join(root_dir, dataset, 'label')
 
-        for file_name in os.listdir(label_dir):
+        def _inner_list_file(path):
+            if ImageHelper.is_zip_path(path):
+                return ZipReader.list_files(path)
+            else:
+                return os.listdir(path)
+
+        def _inner_exist_file(path):
+            if ImageHelper.is_zip_path(path):
+                return ZipReader.exist_file(path)
+            else:
+                return os.path.exists(path)
+
+        for file_name in _inner_list_file(label_dir):
             image_name = '.'.join(file_name.split('.')[:-1])
             label_path = os.path.join(label_dir, file_name)
             img_path = ImageHelper.imgpath(image_dir, image_name)
-            if not os.path.exists(label_path) or img_path is None:
+            if not _inner_exist_file(label_path) or img_path is None:
                 Log.warn('Label Path: {} not exists.'.format(label_path))
                 continue
 
@@ -107,11 +121,11 @@ class DefaultLoader(data.Dataset):
         if dataset == 'train' and self.configer.get('data', 'include_val'):
             image_dir = os.path.join(root_dir, 'val/image')
             label_dir = os.path.join(root_dir, 'val/label')
-            for file_name in os.listdir(label_dir):
+            for file_name in _inner_list_file(dataset, label_dir):
                 image_name = '.'.join(file_name.split('.')[:-1])
                 label_path = os.path.join(label_dir, file_name)
                 img_path = ImageHelper.imgpath(image_dir, image_name)
-                if not os.path.exists(label_path) or img_path is None:
+                if not _inner_exist_file(label_path) or img_path is None:
                     Log.warn('Label Path: {} not exists.'.format(label_path))
                     continue
 
