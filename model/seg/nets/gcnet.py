@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from model.backbone.backbone_selector import BackboneSelector
 from model.tools.module_helper import ModuleHelper
 from model.seg.loss.loss import BASE_LOSS_DICT
-
+from model.seg.ops.context_block import ContextBlock
 
 class _ConvBatchNormReluBlock(nn.Module):
     def __init__(self, inplanes, outplanes, kernel_size, stride, padding=1, dilation=1, norm_type=None):
@@ -20,40 +20,36 @@ class _ConvBatchNormReluBlock(nn.Module):
         return x
 
 
-# PSP decoder Part
-# pyramid pooling, bilinear upsample
-class PPMBilinearDeepsup(nn.Module):
-    def __init__(self, fc_dim=4096, norm_type=None):
-        super(PPMBilinearDeepsup, self).__init__()
-        self.norm_type = norm_type
-        pool_scales = (1, 2, 3, 6)
-        self.ppm = []
-        # assert norm_type == 'syncbn' or not self.training
-        # Torch BN can't handle feature map size with 1x1.
-        for scale in pool_scales:
-            self.ppm.append(nn.Sequential(
-                nn.AdaptiveAvgPool2d(scale),
-                nn.Conv2d(fc_dim, 512, kernel_size=1, bias=False),
-                ModuleHelper.BNReLU(512, norm_type=norm_type)
-            ))
+class GCBModule(nn.Module):
+    def __init__(self, in_channels, out_channels, num_classes):
+        super(GCBModule, self).__init__()
+        inter_channels = in_channels // 4
+        self.conva = nn.Sequential(nn.Conv2d(in_channels, inter_channels, 3, padding=1, bias=False),
+                                   InPlaceABNSync(inter_channels))
+        self.ctb = ContextBlock(inter_channels, ratio=1./4)
+        self.convb = nn.Sequential(nn.Conv2d(inter_channels, inter_channels, 3, padding=1, bias=False),
+                                   InPlaceABNSync(inter_channels))
 
-        self.ppm = nn.ModuleList(self.ppm)
+        self.bottleneck = nn.Sequential(
+            nn.Conv2d(in_channels+inter_channels, out_channels, kernel_size=3, padding=1, dilation=1, bias=False),
+            InPlaceABNSync(out_channels),
+            nn.Dropout2d(0.1),
+            nn.Conv2d(512, num_classes, kernel_size=1, stride=1, padding=0, bias=True)
+            )
 
-    def forward(self, x):
-        input_size = x.size()
-        ppm_out = [x]
-        for pool_scale in self.ppm:
-            ppm_out.append(F.interpolate(pool_scale(x), (input_size[2], input_size[3]),
-                                         mode='bilinear', align_corners=True))
+    def forward(self, x, recurrence=1):
+        output = self.conva(x)
+        if self.ctb is not None:
+            output = self.ctb(output)
+        output = self.convb(output)
 
-        ppm_out = torch.cat(ppm_out, 1)
-
-        return ppm_out
+        output = self.bottleneck(torch.cat([x, output], 1))
+        return output
 
 
-class PSPNet(nn.Sequential):
+class GCNet(nn.Sequential):
     def __init__(self, configer):
-        super(PSPNet, self).__init__()
+        super(GCNet, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get('data', 'num_classes')
         self.backbone = BackboneSelector(configer).get_backbone()
@@ -64,10 +60,10 @@ class PSPNet(nn.Sequential):
             nn.Dropout2d(0.1),
             nn.Conv2d(num_features // 4, self.num_classes, 1, 1, 0)
         )
-        self.ppm = PPMBilinearDeepsup(fc_dim=num_features, norm_type=self.configer.get('network', 'norm_type'))
+        self.gcb = GCBModule(num_features, 512, self.num_classes)
 
         self.cls = nn.Sequential(
-            nn.Conv2d(num_features + 4 * 512, 512, kernel_size=3, padding=1, bias=False),
+            nn.Conv2d(num_features + 512, 512, kernel_size=3, padding=1, bias=False),
             ModuleHelper.BNReLU(512, norm_type=self.configer.get('network', 'norm_type')),
             nn.Dropout2d(0.1),
             nn.Conv2d(512, self.num_classes, kernel_size=1)
@@ -77,7 +73,7 @@ class PSPNet(nn.Sequential):
     def forward(self, data_dict):
         x = self.backbone(data_dict['img'])
         aux_x = self.dsn(x[-2])
-        x = self.ppm(x[-1])
+        x = self.gcb(x[-1])
         x = self.cls(x)
         x_dsn = F.interpolate(aux_x, size=(data_dict['img'].size(2), data_dict['img'].size(3)),
                               mode="bilinear", align_corners=True)
@@ -113,7 +109,7 @@ class PSPNet(nn.Sequential):
 
 if __name__ == '__main__':
     i = torch.Tensor(1,3,512,512).cuda()
-    model = PSPNet(num_classes=19).cuda()
+    model = GCNet(num_classes=19).cuda()
     model.eval()
     o, _ = model(i)
     #print(o.size())
