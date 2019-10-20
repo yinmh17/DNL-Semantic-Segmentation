@@ -8,12 +8,12 @@ WORK_DIR=$(cd $(dirname $0)/../../../;pwd)
 export PYTHONPATH=${WORK_DIR}:${PYTHONPATH}
 cd ${WORK_DIR}
 
-DATA_DIR="/home/donny/DataSet/Cityscapes"
+DATA_DIR="//philly/rr1/public/v-miyin/data/cityscapes.zip@"
 
 BACKBONE="deepbase_resnet101_dilated8"
 MODEL_NAME="pspnet"
 CHECKPOINTS_NAME="fs_pspnet_cityscapes_seg"$2
-PRETRAINED_MODEL="./pretrained_models/3x3resnet101-imagenet.pth"
+PRETRAINED_MODEL="//philly/rr1/public/v-miyin/model/resnet101-imagenet.pth"
 
 CONFIG_FILE='configs/seg/cityscapes/base_fcn_cityscapes_seg.conf'
 MAX_ITERS=20000
