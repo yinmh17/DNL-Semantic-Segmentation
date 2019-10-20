@@ -32,7 +32,7 @@ class GCBModule(nn.Module):
 
         self.bottleneck = nn.Sequential(
             nn.Conv2d(in_channels+inter_channels, out_channels, kernel_size=3, padding=1, dilation=1, bias=False),
-            InPlaceABNSync(out_channels),
+            ModuleHelper.BNReLU(out_channels, norm_type=self.configer.get('network', 'norm_type')),
             nn.Dropout2d(0.1),
             nn.Conv2d(512, num_classes, kernel_size=1, stride=1, padding=0, bias=True)
             )
