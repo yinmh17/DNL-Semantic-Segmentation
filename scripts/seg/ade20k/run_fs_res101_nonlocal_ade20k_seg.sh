@@ -16,7 +16,8 @@ CHECKPOINTS_NAME="fs_res101_nonlocal_ade20k_seg"$2
 PRETRAINED_MODEL="//philly/rr1/public/v-miyin/model/resnet101-imagenet.pth"
 
 CONFIG_FILE='configs/seg/ade20k/NL_fcn_ade20k_seg.conf'
-MAX_ITERS=150000
+#MAX_ITERS=150000
+MAX_ITERS=75000
 LOSS_TYPE="dsnce_loss"
 
 LOG_DIR="./log/seg/ade20k/"
