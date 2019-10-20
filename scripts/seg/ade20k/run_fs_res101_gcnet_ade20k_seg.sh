@@ -11,7 +11,7 @@ cd ${WORK_DIR}
 DATA_DIR="//philly/rr1/public/v-miyin/data/ADE20K.zip@"
 
 BACKBONE="deepbase_resnet101_dilated8"
-MODEL_NAME="nonlocalbn"
+MODEL_NAME="gcnet"
 CHECKPOINTS_NAME="fs_res101_gcnet_ade20k_seg"$2
 PRETRAINED_MODEL="//philly/rr1/public/v-miyin/model/resnet101-imagenet.pth"
 
