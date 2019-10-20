@@ -32,10 +32,11 @@ IMG_EXTENSIONS = [
 
 
 class ImageHelper(object):
-
+    use_zipreader=False
     @staticmethod
     def is_zip_path(path):
-        return '.zip@' in path
+        use_zipreader = ImageHelper.use_zipreader
+        return ('.zip@' in path and use_zipreader)
 
     @staticmethod
     def read_image(image_path, tool='pil', mode='RGB'):

@@ -17,6 +17,8 @@ class DefaultLoader(data.Dataset):
     def __init__(self, root_dir, dataset=None, aug_transform=None,
                  img_transform=None, label_transform=None, configer=None):
         self.configer = configer
+        if self.configer.get('use_zipreader'):
+            ImageHelper.use_zipreader = True
         self.aug_transform = aug_transform
         self.img_transform = img_transform
         self.label_transform = label_transform
