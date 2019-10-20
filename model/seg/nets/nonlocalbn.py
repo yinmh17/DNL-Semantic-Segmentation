@@ -73,19 +73,12 @@ class NonLocalNet(nn.Sequential):
         )
         self.nlm = NLModule(num_features, 512, self.num_classes, self.configer)
 
-        self.cls = nn.Sequential(
-            nn.Conv2d(num_features + 4 * 512, 512, kernel_size=3, padding=1, bias=False),
-            ModuleHelper.BNReLU(512, norm_type=self.configer.get('network', 'norm_type')),
-            nn.Dropout2d(0.1),
-            nn.Conv2d(512, self.num_classes, kernel_size=1)
-        )
         self.valid_loss_dict = configer.get('loss', 'loss_weights', configer.get('loss.loss_type'))
 
     def forward(self, data_dict):
         x = self.backbone(data_dict['img'])
         aux_x = self.dsn(x[-2])
         x = self.nlm(x[-1])
-        x = self.cls(x)
         x_dsn = F.interpolate(aux_x, size=(data_dict['img'].size(2), data_dict['img'].size(3)),
                               mode="bilinear", align_corners=True)
         x = F.interpolate(x, size=(data_dict['img'].size(2), data_dict['img'].size(3)),
