@@ -46,25 +46,27 @@ class DataLoader(object):
 
     def get_trainloader(self):
         if self.configer.get('train.loader', default=None) in [None, 'default']:
+            Log.info('Get train dataloader start')
             dataset = DefaultLoader(root_dir=self.configer.get('data', 'data_dir'), dataset='train',
                               aug_transform=self.aug_train_transform,
                               img_transform=self.img_transform,
                               label_transform=self.label_transform,
                               configer=self.configer)
             sampler = None
+            Log.info('Get sampler')
             if self.configer.get('network.distributed'):
                 sampler = torch.utils.data.distributed.DistributedSampler(dataset)
-
+            Log.info('Get dataloader')
             trainloader = data.DataLoader(
                 dataset, sampler=sampler,
                 batch_size=self.configer.get('train', 'batch_size'), shuffle=(sampler is None),
-                num_workers=self.configer.get('data', 'workers'), pin_memory=True,
+                num_workers=self.configer.get('data', 'workers'), pin_memory=False,
                 drop_last=self.configer.get('data', 'drop_last'),
                 collate_fn=lambda *args: collate(
                     *args, trans_dict=self.configer.get('train', 'data_transformer')
                 )
             )
-
+            Log.info('Get train dataloader end')
             return trainloader
 
         else:
@@ -73,19 +75,22 @@ class DataLoader(object):
 
     def get_valloader(self):
         if self.configer.get('val.loader', default=None) in [None, 'default']:
-            valloader = data.DataLoader(
-                DefaultLoader(root_dir=self.configer.get('data', 'data_dir'), dataset='val',
+            Log.info('Get val dataloader start')
+            dataset = DefaultLoader(root_dir=self.configer.get('data', 'data_dir'), dataset='val',
                               aug_transform=self.aug_val_transform,
                               img_transform=self.img_transform,
                               label_transform=self.label_transform,
-                              configer=self.configer),
+                              configer=self.configer)
+            Log.info('Get dataloader')
+            valloader = data.DataLoader(
+                dataset,
                 batch_size=self.configer.get('val', 'batch_size'), shuffle=False,
-                num_workers=self.configer.get('data', 'workers'), pin_memory=True,
+                num_workers=self.configer.get('data', 'workers'), pin_memory=False,
                 collate_fn=lambda *args: collate(
                     *args, trans_dict=self.configer.get('val', 'data_transformer')
                 )
             )
-
+            Log.info('Get val dataloader end')
             return valloader
 
         else:

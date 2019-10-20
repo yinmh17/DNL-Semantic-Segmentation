@@ -43,6 +43,8 @@ if __name__ == "__main__":
     # ***********  Params for data.  **********
     parser.add_argument('--data_dir', default=None, type=str,
                         dest='data.data_dir', help='The Directory of the data.')
+    parser.add_argument('--use_zipreader', action='store_true',
+                        help='whether to use zipreader.')
     parser.add_argument('--tag', default=None, type=str,
                         dest='data.tag', help='The Tag of the data.')
     parser.add_argument('--include_val', type=str2bool, nargs='?', default=False,

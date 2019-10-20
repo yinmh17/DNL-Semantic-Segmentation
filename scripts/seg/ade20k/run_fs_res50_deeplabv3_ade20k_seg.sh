@@ -8,7 +8,9 @@ WORK_DIR=$(cd $(dirname $0)/../../../;pwd)
 export PYTHONPATH=${WORK_DIR}:${PYTHONPATH}
 cd ${WORK_DIR}
 
-DATA_DIR="/home/donny/DataSet/ADE20K"
+#DATA_DIR="/vcgrr/v-zhuyao/data/ADE20K/torchcv"
+DATA_DIR="/vcgrr/v-zhuyao/data/ADE20K/torchcv/ADE20K-torchcv.zip@"
+WORKERS=8
 
 BACKBONE="deepbase_resnet50_dilated8"
 MODEL_NAME="deeplabv3"
@@ -36,7 +38,8 @@ if [[ "$1"x == "train"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 4 --val_batch_size 1 \
                          --backbone ${BACKBONE} --model_name ${MODEL_NAME} --drop_last y --syncbn y --dist y \
                          --data_dir ${DATA_DIR} --loss_type ${LOSS_TYPE} --max_iters ${MAX_ITERS} \
-                         --checkpoints_name ${CHECKPOINTS_NAME} --pretrained ${PRETRAINED_MODEL}  2>&1 | tee ${LOG_FILE}
+                         --checkpoints_name ${CHECKPOINTS_NAME} --pretrained ${PRETRAINED_MODEL} \
+                         --workers ${WORKERS}  --use_zipreader 2>&1 | tee ${LOG_FILE}
 
 elif [[ "$1"x == "resume"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 4 --val_batch_size 1 \

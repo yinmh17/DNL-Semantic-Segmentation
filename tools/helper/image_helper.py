@@ -11,7 +11,7 @@ from PIL import Image
 
 from tools.helper.file_helper import FileHelper
 from tools.util.logger import Logger as Log
-
+from tools.util.zipreader import ZipReader
 
 PIL_INTER_DICT = {
     'nearest': Image.NEAREST,
@@ -32,6 +32,11 @@ IMG_EXTENSIONS = [
 
 
 class ImageHelper(object):
+    use_zipreader=False
+    @staticmethod
+    def is_zip_path(path):
+        use_zipreader = ImageHelper.use_zipreader
+        return ('.zip@' in path and use_zipreader)
 
     @staticmethod
     def read_image(image_path, tool='pil', mode='RGB'):
@@ -45,22 +50,41 @@ class ImageHelper(object):
 
     @staticmethod
     def cv2_read_image(image_path, mode='RGB'):
-        img_bgr = cv2.imread(image_path, cv2.IMREAD_COLOR)
-        if mode == 'RGB':
-            return ImageHelper.bgr2rgb(img_bgr)
+        if ImageHelper.is_zip_path(image_path):
+            if mode == 'RGB':
+                return ImageHelper.bgr2rgb(ZipReader.imread(image_path, mode))
 
-        elif mode == 'BGR':
-            return img_bgr
+            elif mode == 'BGR':
+                return ZipReader.imread(image_path, mode)
 
-        elif mode == 'P':
-            return ImageHelper.to_np(Image.open(image_path).convert('P'))
+            elif mode == 'P':
+                return ZipReader.imread(image_path, mode)
+
+            else:
+                Log.error('Not support mode {}'.format(mode))
+                exit(1)
 
         else:
-            Log.error('Not support mode {}'.format(mode))
-            exit(1)
+            img_bgr = cv2.imread(image_path, cv2.IMREAD_COLOR)
+            if mode == 'RGB':
+                return ImageHelper.bgr2rgb(img_bgr)
+
+            elif mode == 'BGR':
+                return img_bgr
+
+            elif mode == 'P':
+                return ImageHelper.to_np(Image.open(image_path).convert('P'))
+
+            else:
+                Log.error('Not support mode {}'.format(mode))
+                exit(1)
 
     @staticmethod
     def pil_read_image(image_path, mode='RGB'):
+        if ImageHelper.is_zip_path(image_path):
+            Log.error('Not support zipfile for pil_read')
+            exit(1)
+
         with open(image_path, 'rb') as f:
             img = Image.open(f)
 
@@ -258,9 +282,56 @@ class ImageHelper(object):
 
     @staticmethod
     def imgpath(data_dir, image_name):
+        '''
+        def _inner_exist_file(path):
+            if ImageHelper.is_zip_path(path):
+                return ZipReader.exist_file(path)
+            else:
+                return os.path.exists(path)
         match_list = [os.path.join(data_dir, '{}{}'.format(image_name, ext)) for ext in IMG_EXTENSIONS
-                      if os.path.exists(os.path.join(data_dir, '{}{}'.format(image_name, ext)))]
+                      if _inner_exist_file(os.path.join(data_dir, '{}{}'.format(image_name, ext)))]
+
         return None if len(match_list) != 1 else match_list[0]
+        '''
+        def _inner_list_file(path):
+            if ImageHelper.is_zip_path(path):
+                return ZipReader.list_files(path)
+            else:
+                return os.listdir(path)
+
+        if ImageHelper.pypass_imgpath(data_dir):
+            return os.path.join(data_dir, '{}{}'.format(image_name, ImageHelper.dataset_ext))
+        else:
+            exist_img_list = _inner_list_file(data_dir)
+            for ext in IMG_EXTENSIONS:
+                image_ext = image_name + ext
+                if image_ext in exist_img_list:
+                    return os.path.join(data_dir, image_ext)
+            return None    
+
+    # TODO: This func is used to speed up zipfile loader init. But it may lead to bugs when images in the train/val set have different ext. Or some labels have no related images.
+    dataset_ext = 0
+    @staticmethod
+    def pypass_imgpath(data_dir):
+        if ImageHelper.dataset_ext == 0:
+            def _inner_list_file(path):
+                if ImageHelper.is_zip_path(path):
+                    return ZipReader.list_files(path)
+                else:
+                    return os.listdir(path)
+            exist_img_list = _inner_list_file(data_dir)
+            tmp_dataset_ext = '.' + exist_img_list[0].split('.')[-1]
+            for exist_img_file in exist_img_list:
+                if '.' + exist_img_file.split('.')[-1] != tmp_dataset_ext:
+                    ImageHelper.dataset_ext = -1
+                    return False
+            ImageHelper.dataset_ext = tmp_dataset_ext
+            Log.warn('Pypass img exist check, consistent ext {} in image folder'.format(ImageHelper.dataset_ext))
+            return True
+        elif ImageHelper.dataset_ext == -1:
+            return False
+        else:
+            return True
 
 
 if __name__ == "__main__":
