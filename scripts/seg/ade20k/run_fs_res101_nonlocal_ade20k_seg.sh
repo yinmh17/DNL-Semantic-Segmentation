@@ -29,7 +29,7 @@ fi
 
 export NCCL_LL_THRESHOLD=0
 
-NGPUS=4
+NGPUS=8
 DIST_PYTHON="${PYTHON} -m torch.distributed.launch --nproc_per_node=${NGPUS}"
 
 if [[ "$1"x == "train"x ]]; then
