@@ -10,9 +10,9 @@ cd ${WORK_DIR}
 
 DATA_DIR="//philly/rr1/public/v-miyin/data/cityscapes.zip@"
 
-BACKBONE="deepbase_resnet50_dilated8"
-MODEL_NAME="nonlocal
-CHECKPOINTS_NAME="fs_deeplabv3_cityscapes_seg"$2
+BACKBONE="deepbase_resnet101_dilated8"
+MODEL_NAME="nonlocalbn"
+CHECKPOINTS_NAME="fs_nonlocal_cityscapes_seg"$2
 PRETRAINED_MODEL="//philly/rr1/public/v-miyin/model/resnet101-imagenet.pth"
 
 CONFIG_FILE='configs/seg/cityscapes/NL_fcn_cityscapes_seg.conf'
