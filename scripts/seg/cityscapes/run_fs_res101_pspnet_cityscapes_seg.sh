@@ -16,7 +16,7 @@ CHECKPOINTS_NAME="fs_pspnet_cityscapes_seg"$2
 PRETRAINED_MODEL="./pretrained_models/3x3resnet101-imagenet.pth"
 
 CONFIG_FILE='configs/seg/cityscapes/base_fcn_cityscapes_seg.conf'
-MAX_ITERS=40000
+MAX_ITERS=20000
 LOSS_TYPE="dsnce_loss"
 
 LOG_DIR="./log/seg/cityscapes/"
