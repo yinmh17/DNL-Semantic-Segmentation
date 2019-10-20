@@ -8,12 +8,12 @@ WORK_DIR=$(cd $(dirname $0)/../../../;pwd)
 export PYTHONPATH=${WORK_DIR}:${PYTHONPATH}
 cd ${WORK_DIR}
 
-DATA_DIR="/home/donny/DataSet/ADE20K"
+DATA_DIR="//philly/rr1/public/v-miyin/data/ADE20K.zip@"
 
 BACKBONE="deepbase_resnet101_dilated8"
 MODEL_NAME="pspnet"
 CHECKPOINTS_NAME="fs_res101_pspnet_ade20k_seg"$2
-PRETRAINED_MODEL="./pretrained_models/3x3resnet101-imagenet.pth"
+PRETRAINED_MODEL="//philly/rr1/public/v-miyin/model/resnet101-imagenet.pth"
 
 CONFIG_FILE='configs/seg/ade20k/base_fcn_ade20k_seg.conf'
 MAX_ITERS=150000
