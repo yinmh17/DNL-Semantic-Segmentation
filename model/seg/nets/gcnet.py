@@ -25,10 +25,10 @@ class GCBModule(nn.Module):
         super(GCBModule, self).__init__()
         inter_channels = in_channels // 4
         self.conva = nn.Sequential(nn.Conv2d(in_channels, inter_channels, 3, padding=1, bias=False),
-                                   InPlaceABNSync(inter_channels))
+                                   ModuleHelper.BNReLU(inter_channels, norm_type=self.configer.get('network', 'norm_type')))
         self.ctb = ContextBlock(inter_channels, ratio=1./4)
         self.convb = nn.Sequential(nn.Conv2d(inter_channels, inter_channels, 3, padding=1, bias=False),
-                                   InPlaceABNSync(inter_channels))
+                                   ModuleHelper.BNReLU(inter_channels, norm_type=self.configer.get('network', 'norm_type')))
 
         self.bottleneck = nn.Sequential(
             nn.Conv2d(in_channels+inter_channels, out_channels, kernel_size=3, padding=1, dilation=1, bias=False),
