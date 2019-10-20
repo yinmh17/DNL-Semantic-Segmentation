@@ -77,7 +77,7 @@ class DataLoader(object):
         if self.configer.get('val.loader', default=None) in [None, 'default']:
             Log.info('Get val dataloader start')
             dataset = DefaultLoader(root_dir=self.configer.get('data', 'data_dir'), dataset='val',
-                              aug_transform=self.aug_train_transform,
+                              aug_transform=self.aug_val_transform,
                               img_transform=self.img_transform,
                               label_transform=self.label_transform,
                               configer=self.configer)
