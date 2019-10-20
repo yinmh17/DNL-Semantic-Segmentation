@@ -21,9 +21,10 @@ class _ConvBatchNormReluBlock(nn.Module):
 
 
 class GCBModule(nn.Module):
-    def __init__(self, in_channels, out_channels, num_classes):
+    def __init__(self, in_channels, out_channels, num_classes, configer):
         super(GCBModule, self).__init__()
         inter_channels = in_channels // 4
+        self.configer = configer
         self.conva = nn.Sequential(nn.Conv2d(in_channels, inter_channels, 3, padding=1, bias=False),
                                    ModuleHelper.BNReLU(inter_channels, norm_type=self.configer.get('network', 'norm_type')))
         self.ctb = ContextBlock(inter_channels, ratio=1./4)
@@ -60,7 +61,7 @@ class GCNet(nn.Sequential):
             nn.Dropout2d(0.1),
             nn.Conv2d(num_features // 4, self.num_classes, 1, 1, 0)
         )
-        self.gcb = GCBModule(num_features, 512, self.num_classes)
+        self.gcb = GCBModule(num_features, 512, self.num_classes, configer)
 
         self.valid_loss_dict = configer.get('loss', 'loss_weights', configer.get('loss.loss_type'))
 
