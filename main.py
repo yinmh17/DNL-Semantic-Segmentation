@@ -37,7 +37,7 @@ if __name__ == "__main__":
                         dest='config_file', help='The file of the hyper parameters.')
     parser.add_argument('--phase', default='train', type=str,
                         dest='phase', help='The phase of module.')
-    parser.add_argument('--gpu', default=[0, 1, 2, 3, 4, 5, 6, 7], nargs='+', type=int,
+    parser.add_argument('--gpu', default=[0, 1, 2, 3], nargs='+', type=int,
                         dest='gpu', help='The gpu list used.')
 
     # ***********  Params for data.  **********
