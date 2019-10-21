@@ -31,7 +31,7 @@ fi
 export NCCL_LL_THRESHOLD=0
 
 NGPUS=8
-DIST_PYTHON="${PYTHON} -m torch.distributed.launch --nproc_per_node=${NGPUS}"
+DIST_PYTHON="NCCL_TREE_THRESHOLD=0 ${PYTHON} -m torch.distributed.launch --nproc_per_node=${NGPUS}"
 
 if [[ "$1"x == "train"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 1 --val_batch_size 1 \
