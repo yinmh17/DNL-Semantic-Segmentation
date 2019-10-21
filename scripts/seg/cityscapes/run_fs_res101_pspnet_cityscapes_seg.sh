@@ -28,6 +28,7 @@ if [[ ! -d ${LOG_DIR} ]]; then
 fi
 
 export NCCL_LL_THRESHOLD=0
+export NCCL_TREE_THRESHOLD=0
 
 NGPUS=4
 DIST_PYTHON="${PYTHON} -u -m torch.distributed.launch --nproc_per_node=${NGPUS}"
