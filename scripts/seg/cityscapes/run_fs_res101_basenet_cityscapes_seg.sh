@@ -8,14 +8,14 @@ WORK_DIR=$(cd $(dirname $0)/../../../;pwd)
 export PYTHONPATH=${WORK_DIR}:${PYTHONPATH}
 cd ${WORK_DIR}
 
-DATA_DIR="//philly/rr1/public/v-miyin/data/cityscapes.zip@"
+DATA_DIR="//philly/eu2/resrchvc/v-miyin/data/cityscapes.zip@"
 
 BACKBONE="deepbase_resnet101_dilated8"
 MODEL_NAME="basenet"
 CHECKPOINTS_NAME="fs_basenet_cityscapes_seg"$2
-PRETRAINED_MODEL="//philly/rr1/public/v-miyin/model/resnet101-imagenet.pth"
+PRETRAINED_MODEL="//philly/eu2/resrchvc/v-miyin/model/resnet101-imagenet.pth"
 CONFIG_FILE='configs/seg/cityscapes/BASE_fcn_cityscapes_seg.conf'
-MAX_ITERS=40000
+MAX_ITERS=20000
 LOSS_TYPE="dsnohemce_loss"
 LOG_DIR="./log/seg/cityscapes/"
 LOG_FILE="${LOG_DIR}${CHECKPOINTS_NAME}.log"
@@ -26,7 +26,7 @@ fi
 export NCCL_LL_THRESHOLD=0
 export NCCL_TREE_THRESHOLD=0
 
-NGPUS=4
+NGPUS=8
 DIST_PYTHON="${PYTHON} -m torch.distributed.launch --nproc_per_node=${NGPUS}"
 if [[ "$1"x == "train"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 2 --val_batch_size 1 \
