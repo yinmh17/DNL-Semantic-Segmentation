@@ -36,7 +36,7 @@ class NLModule_nowd(nn.Module):
                                    weight_init_scale=self.configer.get('nonlocal', 'weight_init_scale'),
                                    with_gc=self.configer.get('nonlocal', 'with_gc'),
                                    with_nl=self.configer.get('nonlocal', 'with_nl'),
-                                   nowd=self.configer.get('nonlocal', 'nowd')
+                                   nowd=self.configer.get('nonlocal', 'nowd'),
                                    use_out=self.configer.get('nonlocal', 'use_out'),
                                    out_bn=self.configer.get('nonlocal', 'out_bn'))
 
