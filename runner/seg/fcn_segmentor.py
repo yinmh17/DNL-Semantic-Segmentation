@@ -56,16 +56,22 @@ class FCNSegmentor(object):
         self.loss = self.seg_model_manager.get_seg_loss()
 
     def _get_parameters(self):
+        wd_0 = []
         lr_1 = []
         lr_10 = []
         params_dict = dict(self.seg_net.named_parameters())
         for key, value in params_dict.items():
             if 'backbone' not in key:
-                lr_10.append(value)
+                if value.__dict__.get('wd', -1) == 0:
+                    wd_0.append(value)
+                    print(key)
+                else:
+                    lr_10.append(value)
             else:
                 lr_1.append(value)
 
         params = [{'params': lr_1, 'lr': self.configer.get('solver', 'lr')['base_lr']},
+                  {'params': wd_0, 'lr': self.configer.get('solver', 'lr')['base_lr'] * 1.0, 'weight_decay': 0.0},
                   {'params': lr_10, 'lr': self.configer.get('solver', 'lr')['base_lr'] * 1.0}]
         return params
 
