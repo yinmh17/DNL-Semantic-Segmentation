@@ -8,12 +8,12 @@ WORK_DIR=$(cd $(dirname $0)/../../../;pwd)
 export PYTHONPATH=${WORK_DIR}:${PYTHONPATH}
 cd ${WORK_DIR}
 
-DATA_DIR="/home/donny/DataSet/PContext"
+DATA_DIR=$3
 
 BACKBONE="deepbase_resnet101_dilated8"
 MODEL_NAME="nonlocalnowd"
 CHECKPOINTS_NAME="fs_${MODEL_NAME}_seg"$2
-PRETRAINED_MODEL="./pretrained_models/3x3resnet101-imagenet.pth"
+PRETRAINED_MODEL=$4
 
 CONFIG_FILE='configs/seg/pcontext/NLnowd_fcn_pcontext_seg.conf'
 MAX_ITERS=30000
