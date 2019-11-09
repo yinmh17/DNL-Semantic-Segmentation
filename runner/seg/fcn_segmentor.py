@@ -80,6 +80,7 @@ class FCNSegmentor(object):
           Train function of every epoch during train phase.
         """
         self.seg_net.train()
+        torch.cuda.empty_cache()
         start_time = time.time()
         # Adjust the learning rate after every epoch.
 
