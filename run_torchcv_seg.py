@@ -25,7 +25,7 @@ parser.add_argument('--auth', help='auth', required=True, type=str)
 parser.add_argument('--branch', help="branch of code", type=str, default='master')
 parser.add_argument('--data_dir', help='data input', type=str, default='/vcgrr/v-zhuyao/data/VOCContext/torchcv')
 parser.add_argument('--restore', help='pretrained model', type=str, default='./pretrained_models/3x3resnet101-imagenet.pth')
-parser.add_argument('--config', help='experiment configure file name', required=True, type=str)
+parser.add_argument('--config', help='experiment configure file name', default=None, type=str)
 parser.add_argument('--nettype', help='type of network', required=True, type=str)
 parser.add_argument('--dataset', help='dataset', required=True, type=str)
 
