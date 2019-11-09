@@ -8,12 +8,12 @@ WORK_DIR=$(cd $(dirname $0)/../../../;pwd)
 export PYTHONPATH=${WORK_DIR}:${PYTHONPATH}
 cd ${WORK_DIR}
 
-DATA_DIR="//philly/eu2/resrchvc/v-miyin/data/cityscapes.zip@"
+DATA_DIR=$3
 
 BACKBONE="deepbase_resnet101_dilated8"
 MODEL_NAME="nonlocalnowd"
 CHECKPOINTS_NAME="fs_nonlocalnowd_cityscapes_seg"$2
-PRETRAINED_MODEL="./pretrained_models/3x3resnet101-imagenet.pth"
+PRETRAINED_MODEL=$4
 
 CONFIG_FILE='configs/seg/cityscapes/NLnowd_fcn_cityscapes_seg.conf'
 MAX_ITERS=60000
