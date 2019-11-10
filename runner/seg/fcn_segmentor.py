@@ -119,7 +119,7 @@ class FCNSegmentor(object):
 
             if self.runner_state['iters'] % self.configer.get('solver.save_iters') == 0 \
                     and self.configer.get('local_rank') == 0:
-                RunnerHelper.save_net(self, self.seg_net)
+                RunnerHelper.save_net(self, self.seg_net, iters=self.runner_state['iters'])
 
             if self.configer.get('solver', 'lr')['metric'] == 'iters' \
                     and self.runner_state['iters'] == self.configer.get('solver', 'max_iters'):
