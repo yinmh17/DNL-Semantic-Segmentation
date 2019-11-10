@@ -213,7 +213,7 @@ class FCNSegmentorTest(object):
 
             for i, meta in enumerate(DCHelper.tolist(data_dict['meta'])):
                 total_logits[i] = cv2.resize(total_logits[i][:meta['border_wh'][1], :meta['border_wh'][0]],
-                                             tuple(meta['ori_img_wh']), interpolation=cv2.INTER_CUBIC)
+                                             tuple(meta['ori_img_size']), interpolation=cv2.INTER_CUBIC)
 
         return total_logits
 
