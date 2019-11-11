@@ -123,6 +123,11 @@ class _NonLocalNd_bn(nn.Module):
         if 'bn' in self.whiten_type:
             key = self.key_bn(key)
             query = self.query_bn(query)
+        if 'ln_nostd' in self.whiten_type :
+            key_mean = key.mean(1).mean(1).view(key.size(0), 1, 1)
+            query_mean = query.mean(1).mean(1).view(query.size(0), 1, 1)
+            key -= key_mean
+            query -= query_mean
 
         # [N, T x H x W, T x H' x W']
         sim_map = torch.bmm(query.transpose(1, 2), key)
