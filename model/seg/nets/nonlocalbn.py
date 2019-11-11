@@ -30,13 +30,14 @@ class NLModule(nn.Module):
         self.whiten_type = self.configer.get('nonlocal', 'whiten_type')
         self.temp = self.configer.get('nonlocal', 'temp')
         self.with_gc = self.configer.get('nonlocal', 'with_gc')
+        self.with_unary = self.configer.get('nonlocal', 'with_unary', default=False)
         self.use_out = self.configer.get('nonlocal', 'use_out')
         self.out_bn = self.configer.get('nonlocal', 'out_bn')
         self.conva = nn.Sequential(nn.Conv2d(in_channels, inter_channels, 3, padding=1, bias=False),
                                    ModuleHelper.BNReLU(inter_channels, norm_type=self.configer.get('network', 'norm_type')))
 
         self.ctb = NonLocal2d_bn(inter_channels, inter_channels // 2, downsample=self.down, whiten_type=self.whiten_type,
-                                     temperature=self.temp, with_gc=self.with_gc, use_out=self.use_out, out_bn=self.out_bn)
+                                     temperature=self.temp, with_gc=self.with_gc, with_unary=self.with_unary, use_out=self.use_out, out_bn=self.out_bn)
 
         self.convb = nn.Sequential(nn.Conv2d(inter_channels, inter_channels, 3, padding=1, bias=False),
                                    ModuleHelper.BNReLU(inter_channels, norm_type=self.configer.get('network', 'norm_type')))
