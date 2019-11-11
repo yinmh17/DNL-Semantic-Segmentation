@@ -9,7 +9,7 @@ import math
 class _NonLocalNd_bn(nn.Module):
 
     def __init__(self, dim, inplanes, planes, downsample, use_gn, lr_mult, use_out, out_bn, whiten_type, temperature,
-                 with_gc):
+                 with_gc, with_unary):
         assert dim in [1, 2, 3], "dim {} is not supported yet".format(dim)
         # assert whiten_type in ['channel', 'spatial']
         if dim == 3:
@@ -63,6 +63,7 @@ class _NonLocalNd_bn(nn.Module):
         self.whiten_type = whiten_type
         self.temperature = temperature
         self.with_gc = with_gc
+        self.with_unary = with_unary
 
         self.reset_parameters()
         self.reset_lr_mult(lr_mult)
@@ -144,6 +145,14 @@ class _NonLocalNd_bn(nn.Module):
         # if self.norm is not None:
         #     out = self.norm(out)
         out_sim = self.gamma * out_sim
+        
+        if self.with_unary:
+            if query_mean.shape[1] ==1:
+                query_mean = query_mean.expand(-1, key.shape[1], -1)
+            unary = torch.bmm(query_mean.transpose(1,2),key)
+            unary = self.softmax(unary)
+            out_unary = torch.bmm(value, unary.permute(0,2,1)).unsqueeze(-1)
+            out_sim = out_sim + out_unary
 
         # out = residual + out_sim
 
