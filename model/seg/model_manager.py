@@ -13,6 +13,7 @@ from model.seg.nets.gcnet import GCNet
 from model.seg.nets.basenet import BaseNet
 from model.seg.nets.annn import asymmetric_non_local_network
 from model.seg.loss.loss import Loss
+from model.seg.nets.unarynet import UnaryNet
 from tools.util.logger import Logger as Log
 
 
@@ -24,7 +25,8 @@ SEG_MODEL_DICT = {
     'nonlocalbn': NonLocalNet,
     'nonlocalnowd': NonLocalNet_nowd,
     'gcnet': GCNet,
-    'basenet': BaseNet
+    'basenet': BaseNet,
+    'unary': UnaryNet
 }
 
 
