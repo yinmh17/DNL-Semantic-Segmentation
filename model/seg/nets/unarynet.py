@@ -56,7 +56,7 @@ class UNModule(nn.Module):
 
 class UnaryNet(nn.Sequential):
     def __init__(self, configer):
-        super(UnarylNet, self).__init__()
+        super(UnaryNet, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get('data', 'num_classes')
         self.backbone = BackboneSelector(configer).get_backbone()
