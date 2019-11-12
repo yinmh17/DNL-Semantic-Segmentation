@@ -16,7 +16,7 @@ CHECKPOINTS_NAME="fs_${MODEL_NAME}_seg"$2
 PRETRAINED_MODEL=$4
 
 CONFIG_FILE='configs/seg/pvoc/NLcw_fcn_pvoc_seg.conf'
-MAX_ITERS=30000
+MAX_ITERS=60000
 LOSS_TYPE="dsnohemce_loss"
 
 LOG_DIR="./log/seg/pcontext/"
