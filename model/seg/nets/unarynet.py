@@ -21,9 +21,9 @@ class _ConvBatchNormReluBlock(nn.Module):
         return x
 
 
-class NLModule(nn.Module):
+class UNModule(nn.Module):
     def __init__(self, in_channels, out_channels, num_classes, configer):
-        super(NLModule, self).__init__()
+        super(UNModule, self).__init__()
         inter_channels = in_channels // 4
         self.configer = configer
         self.down = self.configer.get('unary', 'downsample')
@@ -54,9 +54,9 @@ class NLModule(nn.Module):
         output = self.bottleneck(torch.cat([x, output], 1))
         return output
 
-class NonLocalNet(nn.Sequential):
+class UnaryNet(nn.Sequential):
     def __init__(self, configer):
-        super(NonLocalNet, self).__init__()
+        super(UnarylNet, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get('data', 'num_classes')
         self.backbone = BackboneSelector(configer).get_backbone()
@@ -67,7 +67,7 @@ class NonLocalNet(nn.Sequential):
             nn.Dropout2d(0.1),
             nn.Conv2d(num_features // 4, self.num_classes, 1, 1, 0)
         )
-        self.nlm = NLModule(num_features, 512, self.num_classes, self.configer)
+        self.nlm = UNModule(num_features, 512, self.num_classes, self.configer)
 
         self.valid_loss_dict = configer.get('loss', 'loss_weights', configer.get('loss.loss_type'))
 
