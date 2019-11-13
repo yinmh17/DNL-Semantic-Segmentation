@@ -12,7 +12,7 @@ DATA_DIR=$3
 
 BACKBONE="deepbase_resnet101_dilated8"
 MODEL_NAME="nonlocalbn"
-CHECKPOINTS_NAME="fs_nonlocal_cityscapes_seg"$2
+CHECKPOINTS_NAME="fs_nonlocal_cityscapes_coarse_seg"$2
 PRETRAINED_MODEL=$4
 
 CONFIG_FILE='configs/seg/cityscapes/NL_fcn_cityscapes_seg.conf'
