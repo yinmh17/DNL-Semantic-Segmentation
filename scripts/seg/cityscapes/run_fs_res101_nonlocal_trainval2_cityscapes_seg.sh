@@ -37,8 +37,8 @@ DIST_PYTHON="${PYTHON} -m torch.distributed.launch --nproc_per_node=${NGPUS}"
 if [[ "$1"x == "train"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 2 --val_batch_size 1 \
                          --backbone ${BACKBONE} --model_name ${MODEL_NAME} --gpu 0 1 2 3 --drop_last y --syncbn y --dist y \
-                         --data_dir ${DATA_DIR} --loss_type ${LOSS_TYPE} --max_iters ${MAX_ITERS} \
-                         --checkpoints_name ${CHECKPOINTS_NAME} --pretrained ${PRETRAINED_MODEL} 2>&1 | tee ${LOG_FILE}
+                         --data_dir ${DATA_DIR} --loss_type ${LOSS_TYPE} --max_iters ${MAX_ITERS}  \
+                         --checkpoints_name ${CHECKPOINTS_NAME} --resume ./checkpoints/seg/cityscapes/fs_nonlocal_cityscapes_coarse_segtag_iters50000.pth 2>&1 | tee ${LOG_FILE}
 
 elif [[ "$1"x == "resume"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 2 --val_batch_size 1 \
