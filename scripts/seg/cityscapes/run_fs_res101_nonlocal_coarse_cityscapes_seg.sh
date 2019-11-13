@@ -43,7 +43,7 @@ elif [[ "$1"x == "resume"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 2 --val_batch_size 1 \
                          --backbone ${BACKBONE} --model_name ${MODEL_NAME} --gpu 0 1 2 3 --drop_last y --syncbn y --dist y \
                          --data_dir ${DATA_DIR} --loss_type ${LOSS_TYPE} --base_lr ${BASE_LR} --max_iters ${MAX_ITERS} \
-                         --resume_continue y --resume ./checkpoints/seg/cityscapes/${CHECKPOINTS_NAME}_iters100000.pth \
+                         --resume_continue y --resume ./checkpoints/seg/cityscapes/fs_nonlocal_cityscapes_segtag_iters100000.pth \
                          --checkpoints_name ${CHECKPOINTS_NAME} --pretrained ${PRETRAINED_MODEL}  2>&1 | tee -a ${LOG_FILE}
 
 elif [[ "$1"x == "val"x ]]; then
