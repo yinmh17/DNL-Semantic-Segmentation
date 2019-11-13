@@ -49,7 +49,7 @@ elif [[ "$1"x == "resume"x ]]; then
 elif [[ "$1"x == "val"x ]]; then
   ${PYTHON} main.py --config_file ${CONFIG_FILE} --phase test --gpu 0 1 2 3 --gather n \
                     --backbone ${BACKBONE} --model_name ${MODEL_NAME} --checkpoints_name ${CHECKPOINTS_NAME} \
-                    --resume ./pretrained_models/cityscapes/${CHECKPOINTS_NAME}_latest.pth --resume_strict y\
+                    --resume ./pretrained_models/${CHECKPOINTS_NAME}_latest.pth --resume_strict y\
                     --test_dir ${DATA_DIR}/val/image --out_dir val  2>&1 | tee -a ${LOG_FILE}
   cd metric/seg/
   ${PYTHON} seg_evaluator.py --config_file "../../"${CONFIG_FILE} \
@@ -59,7 +59,7 @@ elif [[ "$1"x == "val"x ]]; then
 elif [[ "$1"x == "test"x ]]; then
   ${PYTHON} main.py --config_file ${CONFIG_FILE} --phase test --gpu 0 1 2 3 --gather n \
                     --backbone ${BACKBONE} --model_name ${MODEL_NAME} --checkpoints_name ${CHECKPOINTS_NAME} \
-                    --resume ./pretrained_models/cityscapes/${CHECKPOINTS_NAME}_iters100000.pth \
+                    --resume ./pretrained_models/${CHECKPOINTS_NAME}_iters100000.pth \
                     --test_dir ${DATA_DIR}/test --out_dir test  2>&1 | tee -a ${LOG_FILE}
 
 else
