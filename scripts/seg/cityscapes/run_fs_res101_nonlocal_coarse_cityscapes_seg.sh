@@ -15,7 +15,7 @@ MODEL_NAME="nonlocalbn"
 CHECKPOINTS_NAME="fs_nonlocal_cityscapes_coarse_seg"$2
 PRETRAINED_MODEL=$4
 
-CONFIG_FILE='configs/seg/cityscapes/NL_fcn_cityscapes_seg.conf'
+CONFIG_FILE='configs/seg/cityscapes/NLcw_fcn_cityscapes_seg.conf'
 MAX_ITERS=50000
 LOSS_TYPE="dsnohemce_loss"
 BASE_LR=0.001
@@ -37,7 +37,7 @@ if [[ "$1"x == "train"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 2 --val_batch_size 1 \
                          --backbone ${BACKBONE} --model_name ${MODEL_NAME} --gpu 0 1 2 3 --drop_last y --syncbn y --dist y \
                          --data_dir ${DATA_DIR} --loss_type ${LOSS_TYPE} --max_iters ${MAX_ITERS} \
-                         --checkpoints_name ${CHECKPOINTS_NAME} --pretrained ${PRETRAINED_MODEL} 2>&1 | tee ${LOG_FILE}
+                         --checkpoints_name ${CHECKPOINTS_NAME} --resume ./checkpoints/seg/cityscapes/fs_nonlocal_cityscapes_segtag_iters100000.pth 2>&1 | tee ${LOG_FILE}
 
 elif [[ "$1"x == "resume"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 2 --val_batch_size 1 \
