@@ -166,10 +166,26 @@ class FCNSegmentorTest(object):
             split_batch.extend(list(inputs))
 
         out_list = list()
+        print(data_dict['img'].data[0].shape, len(split_batch))
         with torch.no_grad():
-            results = self.seg_net(dict(img=DCHelper.todc(split_batch, stack=True, samples_per_gpu=True)))
-            for res in results:
-                out_list.append(res['out'].permute(0, 2, 3, 1).cpu().numpy())
+            _len_base=64
+            if len(split_batch)>_len_base:
+                #print('my_test')
+                results = []
+                for i in range(0, len(split_batch)-1, _len_base):
+                    #print(i)
+                    torch.cuda.empty_cache()
+                    tmp_results = self.seg_net(dict(img=DCHelper.todc(split_batch[i:min(i+_len_base, len(split_batch))], stack=True, samples_per_gpu=True)))
+                    results.append(torch.cat([ele['out'].detach().cpu().permute(0, 2, 3, 1) for ele in tmp_results]))
+                    del tmp_results
+
+                results = torch.cat(results)
+                results = results.view(len(height_starts_list), -1, results.shape[1], results.shape[2], results.shape[3])
+                out_list = [results[i].numpy() for i in range(len(height_starts_list))]
+            else:
+                results = self.seg_net(dict(img=DCHelper.todc(split_batch, stack=True, samples_per_gpu=True)))
+                for res in results:
+                    out_list.append(res['out'].detach().permute(0, 2, 3, 1).cpu().numpy())
 
         total_logits = [np.zeros((hw[0], hw[1],
                                   self.configer.get('data', 'num_classes')), np.float32) for hw in hw_list]
