@@ -39,7 +39,7 @@ if [[ "$1"x == "train"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 2 --val_batch_size 1 \
                          --backbone ${BACKBONE} --model_name ${MODEL_NAME} --gpu 0 1 2 3 4 5 6 7 --drop_last y --syncbn y --dist y \
                          --data_dir ${DATA_DIR} --loss_type ${LOSS_TYPE} --max_iters ${MAX_ITERS} --base_lr ${BASE_LR} --max_iters ${MAX_ITERS}\
-                         --checkpoints_name ${CHECKPOINTS_NAME} --pretrained ${PRETRAINED_MODEL}  --resume ./pretrained_models/fs_res101_nonlocal_ade20k_segtag_latest.pth 2>&1 | tee ${LOG_FILE}
+                         --checkpoints_name ${CHECKPOINTS_NAME} --resume ./pretrained_models/fs_res101_nonlocal_ade20k_segtag_latest.pth 2>&1 | tee ${LOG_FILE}
 
 elif [[ "$1"x == "resume"x ]]; then
   ${DIST_PYTHON} main.py --config_file ${CONFIG_FILE} --phase train --train_batch_size 2 --val_batch_size 1 \
