@@ -15,7 +15,7 @@ MODEL_NAME="nonlocalbn"
 CHECKPOINTS_NAME="fs_res101_nonlocalbn_ade20k_seg_trainval"$2
 PRETRAINED_MODEL="./pretrained_models/3x3resnet101-imagenet.pth"
 
-CONFIG_FILE='configs/seg/ade20k/NLbn_fcn_ade20k_seg.conf'
+CONFIG_FILE='configs/seg/ade20k/NL_fcn_ade20k_seg.conf'
 #MAX_ITERS=150000
 MAX_ITERS=75000
 LOSS_TYPE="dsnohemce_loss"
