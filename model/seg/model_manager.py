@@ -8,6 +8,7 @@ from model.seg.nets.denseassp import DenseASPP
 from model.seg.nets.deeplabv3 import DeepLabV3
 from model.seg.nets.pspnet import PSPNet
 from model.seg.nets.nonlocalbn import NonLocalNet
+from model.seg.nets.nonlocalbn_single import NonLocalNet_single
 from model.seg.nets.nonlocalnowd import NonLocalNet_nowd
 from model.seg.nets.gcnet import GCNet
 from model.seg.nets.basenet import BaseNet
@@ -23,6 +24,7 @@ SEG_MODEL_DICT = {
     'denseaspp': DenseASPP,
     'annn': asymmetric_non_local_network,
     'nonlocalbn': NonLocalNet,
+    'nonlocalbn_single': NonLocalNet_single,
     'nonlocalnowd': NonLocalNet_nowd,
     'gcnet': GCNet,
     'basenet': BaseNet,
