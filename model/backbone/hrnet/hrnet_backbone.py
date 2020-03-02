@@ -452,9 +452,11 @@ class HighResolutionNet(nn.Module):
             model_dict.update(pretrained_dict)
             self.load_state_dict(model_dict)
             
-def HRNet_w48(configer, **kwargs):
-    self.configer = configer
-    pretrained = self.configer.get('network.pretrained') if pretrained is None else pretrained
-    model = HighResolutionNet()
-    model.init_weights(pretrained=pretrained)
-    return model
+class HRNet_w48(object):
+    def __init__(self, configer):
+        self.configer = configer
+    def __call__(self, backbone=None, pretrained=None):
+        pretrained = configer.get('network.pretrained') if pretrained is None else pretrained
+        model = HighResolutionNet()
+        model.init_weights(pretrained=pretrained)
+        return model
