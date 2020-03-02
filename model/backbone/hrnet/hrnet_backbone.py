@@ -246,8 +246,7 @@ blocks_dict = {
 
 class HighResolutionNet(nn.Module):
 
-    def __init__(self, config, **kwargs):
-        extra = config.MODEL.EXTRA
+    def __init__(self, **kwargs):
         super(HighResolutionNet, self).__init__()
         
         self.num_features = 720
@@ -452,3 +451,9 @@ class HighResolutionNet(nn.Module):
                     '=> loading {} pretrained model {}'.format(k, pretrained))
             model_dict.update(pretrained_dict)
             self.load_state_dict(model_dict)
+            
+def HRNet_w48(pretrained=None, **kwargs):
+
+    model = HighResolutionNet()
+    model.init_weights(pretrained=pretrained)
+    return model
