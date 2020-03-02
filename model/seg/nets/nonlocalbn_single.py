@@ -59,9 +59,9 @@ class NLModule(nn.Module):
         output = self.bottleneck(torch.cat([x, output], 1))
         return output
 
-class NonLocalNet(nn.Sequential):
+class NonLocalNet_single(nn.Sequential):
     def __init__(self, configer):
-        super(NonLocalNet, self).__init__()
+        super(NonLocalNet_single, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get('data', 'num_classes')
         self.backbone = BackboneSelector(configer).get_backbone()
