@@ -49,7 +49,7 @@ class BackboneSelector(object):
             model = DFNetBackbone(self.configer)(**params)
             
         elif 'hrnet' in backbone:
-            model = HRNet_w48(self.configer)
+            model = HRNet_w48(self.configer)(**params)
 
         else:
             Log.error('Backbone {} is invalid.'.format(backbone))
