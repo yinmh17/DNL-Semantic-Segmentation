@@ -11,6 +11,7 @@ from model.backbone.densenet.densenet_backbone import DenseNetBackbone
 from model.backbone.squeezenet.squeezenet_backbone import SqueezeNetBackbone
 from model.backbone.shufflenet.shufflenetv2_backbone import ShuffleNetv2Backbone
 from model.backbone.dfnet.dfnet_backbone import DFNetBackbone
+from model.backbone.hrnet.hrnet_backbone import HRNet_w48
 from tools.util.logger import Logger as Log
 
 
@@ -33,7 +34,7 @@ class BackboneSelector(object):
             model = ResNetBackbone(self.configer)(**params)
 
         elif 'mobilenet' in backbone:
-            model = MobileNetBackbone(self.configer)(*params)
+            model = MobileNetBackbone(self.configer)(**params)
 
         elif 'densenet' in backbone:
             model = DenseNetBackbone(self.configer)(**params)
@@ -46,6 +47,9 @@ class BackboneSelector(object):
 
         elif 'dfnet' in backbone:
             model = DFNetBackbone(self.configer)(**params)
+            
+        elif 'hrnet' in backbone:
+            model = HRNet_w48(self.configer)
 
         else:
             Log.error('Backbone {} is invalid.'.format(backbone))
