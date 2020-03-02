@@ -12,11 +12,9 @@ import torch
 import torch.nn as nn
 import torch._utils
 import torch.nn.functional as F
-from .Nonlocal import NonLocal2d_bn
 from torch.autograd import Variable
-BatchNorm2d = nn.BatchNorm2d
-BN_MOMENTUM = 0.01
-logger = logging.getLogger(__name__)
+norm_type='batchnorm'
+from model.tools.module_helper import ModuleHelper
 
 def conv3x3(in_planes, out_planes, stride=1):
     """3x3 convolution with padding"""
@@ -30,10 +28,10 @@ class BasicBlock(nn.Module):
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         super(BasicBlock, self).__init__()
         self.conv1 = conv3x3(inplanes, planes, stride)
-        self.bn1 = BatchNorm2d(planes, momentum=BN_MOMENTUM)
+        self.bn1 = ModuleHelper.BatchNorm2d(norm_type=norm_type)(planes)
         self.relu = nn.ReLU(inplace=True)
         self.conv2 = conv3x3(planes, planes)
-        self.bn2 = BatchNorm2d(planes, momentum=BN_MOMENTUM)
+        self.bn2 = ModuleHelper.BatchNorm2d(norm_type=norm_type)(planes)
         self.downsample = downsample
         self.stride = stride
 
@@ -62,14 +60,13 @@ class Bottleneck(nn.Module):
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         super(Bottleneck, self).__init__()
         self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
-        self.bn1 = BatchNorm2d(planes, momentum=BN_MOMENTUM)
+        self.bn1 = ModuleHelper.BatchNorm2d(norm_type=norm_type)(planes)
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
                                padding=1, bias=False)
-        self.bn2 = BatchNorm2d(planes, momentum=BN_MOMENTUM)
+        self.bn2 = ModuleHelper.BatchNorm2d(norm_type=norm_type)(planes)
         self.conv3 = nn.Conv2d(planes, planes * self.expansion, kernel_size=1,
                                bias=False)
-        self.bn3 = BatchNorm2d(planes * self.expansion,
-                               momentum=BN_MOMENTUM)
+        self.bn3 = ModuleHelper.BatchNorm2d(norm_type=norm_type)(planes * self.expansion)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.stride = stride
@@ -144,8 +141,7 @@ class HighResolutionModule(nn.Module):
                 nn.Conv2d(self.num_inchannels[branch_index],
                           num_channels[branch_index] * block.expansion,
                           kernel_size=1, stride=stride, bias=False),
-                BatchNorm2d(num_channels[branch_index] * block.expansion,
-                            momentum=BN_MOMENTUM),
+                ModuleHelper.BatchNorm2d(norm_type=norm_type)(num_channels[branch_index] * block.expansion),
             )
 
         layers = []
@@ -186,7 +182,7 @@ class HighResolutionModule(nn.Module):
                                   1,
                                   0,
                                   bias=False),
-                        BatchNorm2d(num_inchannels[i], momentum=BN_MOMENTUM)))
+                        ModuleHelper.BatchNorm2d(norm_type=norm_type)(num_inchannels[i])))
                 elif j == i:
                     fuse_layer.append(None)
                 else:
@@ -198,16 +194,14 @@ class HighResolutionModule(nn.Module):
                                 nn.Conv2d(num_inchannels[j],
                                           num_outchannels_conv3x3,
                                           3, 2, 1, bias=False),
-                                BatchNorm2d(num_outchannels_conv3x3, 
-                                            momentum=BN_MOMENTUM)))
+                                ModuleHelper.BatchNorm2d(norm_type=norm_type)(num_outchannels_conv3x3)))
                         else:
                             num_outchannels_conv3x3 = num_inchannels[j]
                             conv3x3s.append(nn.Sequential(
                                 nn.Conv2d(num_inchannels[j],
                                           num_outchannels_conv3x3,
                                           3, 2, 1, bias=False),
-                                BatchNorm2d(num_outchannels_conv3x3,
-                                            momentum=BN_MOMENTUM),
+                                ModuleHelper.BatchNorm2d(norm_type=norm_type)(num_outchannels_conv3x3),
                                 nn.ReLU(inplace=True)))
                     fuse_layer.append(nn.Sequential(*conv3x3s))
             fuse_layers.append(nn.ModuleList(fuse_layer))
@@ -260,20 +254,22 @@ class HighResolutionNet(nn.Module):
         # stem net
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=2, padding=1,
                                bias=False)
-        self.bn1 = BatchNorm2d(64, momentum=BN_MOMENTUM)
+        self.bn1 = ModuleHelper.BatchNorm2d(norm_type=norm_type)(64)
         self.conv2 = nn.Conv2d(64, 64, kernel_size=3, stride=2, padding=1,
                                bias=False)
-        self.bn2 = BatchNorm2d(64, momentum=BN_MOMENTUM)
+        self.bn2 = ModuleHelper.BatchNorm2d(norm_type=norm_type)(64)
         self.relu = nn.ReLU(inplace=True)
         
-        self.stage1_cfg = extra['STAGE1']
+        self.stage1_cfg = dict('NUM_MODULES'=1, 'NUM_BRANCHES'=1, 'BLOCK'='BOTTLENECK', 
+                               'NUM_BLOCKS'=[4], 'NUM_CHANNELS'=[64], 'FUSE_METHOD'='SUM')
         num_channels = self.stage1_cfg['NUM_CHANNELS'][0]
         block = blocks_dict[self.stage1_cfg['BLOCK']]
         num_blocks = self.stage1_cfg['NUM_BLOCKS'][0]
         self.layer1 = self._make_layer(block, 64, num_channels, num_blocks)
         stage1_out_channel = block.expansion*num_channels
 
-        self.stage2_cfg = extra['STAGE2']
+        self.stage2_cfg = dict('NUM_MODULES'=1, 'NUM_BRANCHES'=2, 'BLOCK'='BASIC', 
+                               'NUM_BLOCKS'=[4,4], 'NUM_CHANNELS'=[48,96], 'FUSE_METHOD'='SUM')
         num_channels = self.stage2_cfg['NUM_CHANNELS']
         block = blocks_dict[self.stage2_cfg['BLOCK']]
         num_channels = [
@@ -283,7 +279,8 @@ class HighResolutionNet(nn.Module):
         self.stage2, pre_stage_channels = self._make_stage(
             self.stage2_cfg, num_channels)
 
-        self.stage3_cfg = extra['STAGE3']
+        self.stage3_cfg = dict('NUM_MODULES'=4, 'NUM_BRANCHES'=3, 'BLOCK'='BASIC', 
+                               'NUM_BLOCKS'=[4,4,4], 'NUM_CHANNELS'=[48,96,192], 'FUSE_METHOD'='SUM')
         num_channels = self.stage3_cfg['NUM_CHANNELS']
         block = blocks_dict[self.stage3_cfg['BLOCK']]
         num_channels = [
@@ -293,7 +290,8 @@ class HighResolutionNet(nn.Module):
         self.stage3, pre_stage_channels = self._make_stage(
             self.stage3_cfg, num_channels)
 
-        self.stage4_cfg = extra['STAGE4']
+        self.stage4_cfg = dict('NUM_MODULES'=3, 'NUM_BRANCHES'=4, 'BLOCK'='BASIC', 
+                               'NUM_BLOCKS'=[4,4,4,4], 'NUM_CHANNELS'=[48,96,192,384], 'FUSE_METHOD'='SUM')
         num_channels = self.stage4_cfg['NUM_CHANNELS']
         block = blocks_dict[self.stage4_cfg['BLOCK']]
         num_channels = [
@@ -324,8 +322,8 @@ class HighResolutionNet(nn.Module):
                                   1,
                                   1,
                                   bias=False),
-                        BatchNorm2d(
-                            num_channels_cur_layer[i], momentum=BN_MOMENTUM),
+                        ModuleHelper.BatchNorm2d(norm_type=norm_type)(
+                            num_channels_cur_layer[i]),
                         nn.ReLU(inplace=True)))
                 else:
                     transition_layers.append(None)
@@ -338,7 +336,7 @@ class HighResolutionNet(nn.Module):
                     conv3x3s.append(nn.Sequential(
                         nn.Conv2d(
                             inchannels, outchannels, 3, 2, 1, bias=False),
-                        BatchNorm2d(outchannels, momentum=BN_MOMENTUM),
+                        ModuleHelper.BatchNorm2d(norm_type=norm_type)(outchannels),
                         nn.ReLU(inplace=True)))
                 transition_layers.append(nn.Sequential(*conv3x3s))
 
@@ -350,7 +348,7 @@ class HighResolutionNet(nn.Module):
             downsample = nn.Sequential(
                 nn.Conv2d(inplanes, planes * block.expansion,
                           kernel_size=1, stride=stride, bias=False),
-                BatchNorm2d(planes * block.expansion, momentum=BN_MOMENTUM),
+                ModuleHelper.BatchNorm2d(norm_type=norm_type)(planes * block.expansion),
             )
 
         layers = []
