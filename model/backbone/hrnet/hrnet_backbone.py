@@ -255,7 +255,8 @@ class HighResolutionNet(nn.Module):
     def __init__(self, config, **kwargs):
         extra = config.MODEL.EXTRA
         super(HighResolutionNet, self).__init__()
-
+        
+        self.num_features = 720
         # stem net
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=2, padding=1,
                                bias=False)
@@ -304,6 +305,9 @@ class HighResolutionNet(nn.Module):
         
         last_inp_channels = np.int(np.sum(pre_stage_channels))
         
+    def get_num_features(self):
+        return self.num_features
+    
     def _make_transition_layer(
             self, num_channels_pre_layer, num_channels_cur_layer):
         num_branches_cur = len(num_channels_cur_layer)
