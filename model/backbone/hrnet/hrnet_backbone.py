@@ -456,7 +456,7 @@ class HRNet_w48(object):
     def __init__(self, configer):
         self.configer = configer
     def __call__(self, backbone=None, pretrained=None):
-        pretrained = configer.get('network.pretrained') if pretrained is None else pretrained
+        pretrained = self.configer.get('network.pretrained') if pretrained is None else pretrained
         model = HighResolutionNet()
         model.init_weights(pretrained=pretrained)
         return model
