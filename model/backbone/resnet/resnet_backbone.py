@@ -125,6 +125,11 @@ class ResNetBackbone(object):
             arch_net = DilatedResnetBackbone(orig_resnet, dilate_scale=8, multi_grid=None)
             arch_net.num_features = 512
 
+        elif arch == 'deepbase_resnet18_dilated8':
+            orig_resnet = deepbase_resnet18(pretrained=pretrained)
+            arch_net = DilatedResnetBackbone(orig_resnet, dilate_scale=8, multi_grid=None)
+            arch_net.num_features = 512
+
         elif arch == 'resnet34':
             orig_resnet = resnet34(pretrained=pretrained)
             arch_net = NormalResnetBackbone(orig_resnet)
