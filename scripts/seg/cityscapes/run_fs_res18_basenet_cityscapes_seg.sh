@@ -10,7 +10,7 @@ cd ${WORK_DIR}
 
 DATA_DIR=$3
 
-BACKBONE="resnet18_dilated8"
+BACKBONE="deepbase_resnet18_dilated8"
 MODEL_NAME="basenet"
 CHECKPOINTS_NAME="fs_res18_basenet_cityscapes_seg"$2
 PRETRAINED_MODEL=$4
