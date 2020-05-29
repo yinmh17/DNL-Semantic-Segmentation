@@ -15,7 +15,7 @@ MODEL_NAME="nonlocalnowd"
 CHECKPOINTS_NAME="fs_${MODEL_NAME}_seg"$2
 PRETRAINED_MODEL=$4
 
-CONFIG_FILE='configs/seg/pcontext/NLnowd_fcn_pcontext_seg.conf'
+CONFIG_FILE='configs/seg/pcontext/NLnowd59c_fcn_pcontext_seg.conf'
 MAX_ITERS=30000
 LOSS_TYPE="dsnohemce_loss"
 
