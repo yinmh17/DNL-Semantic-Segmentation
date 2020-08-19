@@ -15,7 +15,7 @@ MODEL_NAME="nonlocalbn"
 CHECKPOINTS_NAME="fs_nonlocalbn_cityscapes_seg"$2
 PRETRAINED_MODEL=$4
 
-CONFIG_FILE='configs/seg/cityscapes/NLbn_fcn_cityscapes_seg.conf'
+CONFIG_FILE='configs/seg/cityscapes/NLin_fcn_cityscapes_seg.conf'
 MAX_ITERS=60000
 LOSS_TYPE="dsnohemce_loss"
 
