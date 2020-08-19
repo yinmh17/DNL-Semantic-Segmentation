@@ -15,7 +15,7 @@ MODEL_NAME="nonlocalnowd"
 CHECKPOINTS_NAME="fs_nonlocalnowd_cityscapes_seg"$2
 PRETRAINED_MODEL=$4
 
-CONFIG_FILE='configs/seg/cityscapes/NLnowd_fcn_cityscapes_seg.conf'
+CONFIG_FILE='configs/seg/cityscapes/NLnowd_ln_fcn_cityscapes_seg.conf'
 MAX_ITERS=60000
 LOSS_TYPE="dsnohemce_loss"
 
