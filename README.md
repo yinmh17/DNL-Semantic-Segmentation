@@ -10,17 +10,17 @@ The non-local block models long-range dependency in many computer vision tasks. 
 Based on that, we developed the disentangled non-local block, where the two terms are decoupled to facilitate learning for both terms. Disentangled non-local block outperforms non-local block in various tasks.
 
 <div align="center">
-  <img src="demo/dnl.png" width="1178" />
+  <img src="demo/dnl.png" width="769" />
 </div>
 
 ## Main Results
 
 | Dataset | Model | Backbone | Train | Test | mIOU | Batchsize | Scripts |
 |:--------|:---------|:------|:------|:------|:------|:------|:------|
-| Cityscapes | DNL(nowd_in) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [80.15](https://drive.google.com/drive/folders/1wp14HRKZjNzU5rjmDi4zen-w-0Z8LSMs) | 8 ｜ [DNL_nowd_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_in_cityscapes_seg.sh)|
-| Cityscapes | DNL(nowd_ln) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [80.12](https://drive.google.com/drive/folders/1LZDxjdr4z7MDTuOR0r_KZEuLNRkymFf_) | 8 ｜ [DNL_nowd_ln](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_ln_cityscapes_seg.sh)|
-| Cityscapes | DNL(temp_in) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [80.3](https://drive.google.com/drive/folders/1aDvuBFi9cFBxo87syPewpjR2eAvNUtv-) | 8 ｜ [DNL_temp_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocal_in_cityscapes_seg.sh)|
-| ADE20K | DNL(temp_in) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [45.97](https://drive.google.com/drive/folders/1zTqdDcAyyWPZwTp3ktc7uDClAAwjjStc) | 16 ｜ [DNL_temp_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/ade20k/run_fs_res101_nonlocalbn_ade20k_seg.sh)|
+| Cityscapes | DNL(nowd_in) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [80.15](https://drive.google.com/drive/folders/1wp14HRKZjNzU5rjmDi4zen-w-0Z8LSMs) | 8 | [DNL_nowd_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_in_cityscapes_seg.sh)|
+| Cityscapes | DNL(nowd_ln) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [80.12](https://drive.google.com/drive/folders/1LZDxjdr4z7MDTuOR0r_KZEuLNRkymFf_) | 8 | [DNL_nowd_ln](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_ln_cityscapes_seg.sh)|
+| Cityscapes | DNL(temp_in) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [80.3](https://drive.google.com/drive/folders/1aDvuBFi9cFBxo87syPewpjR2eAvNUtv-) | 8 | [DNL_temp_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocal_in_cityscapes_seg.sh)|
+| ADE20K | DNL(temp_in) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [45.97](https://drive.google.com/drive/folders/1zTqdDcAyyWPZwTp3ktc7uDClAAwjjStc) | 16 | [DNL_temp_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/ade20k/run_fs_res101_nonlocalbn_ade20k_seg.sh)|
 
 
 ## Citation
