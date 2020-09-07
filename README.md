@@ -6,11 +6,17 @@ We provide related codes and configuration files to reproduce the ["Disentangled
 
 ## Introduction 
 
-The non-local block models long-range dependency in many computer vision tasks. Our paper first studies the non-local block in depth, where we find that its attention computation can be split into pairwise term unary term. However, the two terms are tightly coupled in the non-local block, which hinders the learning of each. 
+The non-local block models long-range dependency in many computer vision tasks. Our paper first studies the non-local block in depth, where we find that its attention computation can be split into pairwise term and unary term. However, the two terms are tightly coupled in the non-local block, which hinders the learning of each. 
 Based on that, we developed the disentangled non-local block, where the two terms are decoupled to facilitate learning for both terms. Disentangled non-local block outperforms non-local block in various tasks.
 
 <div align="center">
-  <img src="demo/dnl.png" width="769" />
+  <img src="demo/dnl.png" width="600" />
+</div>
+
+The disentangled Non-local block composes of a whitened pairwise term accounting for the relationship between two pixels and a unary term representing the saliency of every pixel. The two terms are clearly decoupled by using independent Softmax functions and embedding matrices. As shown in the attention maps, the whitened pairwise term learns clear within-region clues while the unary term learns salient boundaries.
+
+<div align="center">
+  <img src="demo/dnl_structure.png" width="600" />
 </div>
 
 ## Main Results
