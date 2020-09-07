@@ -29,12 +29,6 @@ The disentangled Non-local block composes of a whitened pairwise term accounting
   journal={arXiv preprint arXiv:2006.06668},
   year={2020}
 }
-@misc{you2019torchcv,
-    author = {Ansheng You and Xiangtai Li and Zhen Zhu and Yunhai Tong},
-    title = {TorchCV: A PyTorch-Based Framework for Deep Learning in Computer Vision},
-    howpublished = {\url{https://github.com/donnyyou/torchcv}},
-    year = {2019}
-}
 ```
 
 ## Install
@@ -103,13 +97,4 @@ Take DNL network validation on Cityscapes dataset for example:
 bash ./scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_ln_cityscapes_seg.sh val tag  /torchcv/data/cityscapes  
 ```
 
-## Main Results
 
-| Dataset | Model | Backbone | Train | Test | mIOU | Batchsize | Scripts |
-|:--------|:---------|:------|:------|:------|:------|:------|:------|
-| Cityscapes | Nonlocal | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [78.3](https://drive.google.com/file/d/1mONol45GnYe288rHmOAaYeIzkERro1EK/view?usp=sharing) | 8 | [NL](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocal_cityscapes_seg.sh)|
-| Cityscapes | DNL | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [79.93](https://drive.google.com/file/d/1wsFbOU6ecKabp-WfRxLTk0TMg_xLlZB_/view?usp=sharing) | 8 | [DNL_nowd_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_in_cityscapes_seg.sh)|
-| Cityscapes | DNL | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [80.0](https://drive.google.com/file/d/1Usx-r5aEJJDNgyn_mJxfWzlK-mP3nhyf/view?usp=sharing) | 8 | [DNL_nowd_ln](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_ln_cityscapes_seg.sh)|
-| Cityscapes | DNL | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [80.15](https://drive.google.com/file/d/1M-KgiV1VigMwURfCcrULkY3rCMBYN7dM/view?usp=sharing) | 8 | [DNL_temp_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocal_in_cityscapes_seg.sh)|
-| ADE20K | DNL | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [45.97](https://drive.google.com/file/d/14rP7MV1E9NrPo4u2nYRiq-thXiJ-2ePp/view?usp=sharing) | 16 | [DNL_temp_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/ade20k/run_fs_res101_nonlocalbn_ade20k_seg.sh)|
-| Pascal Context | DNL | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [54.5](https://drive.google.com/file/d/1Z0KAd2-G1XWkvAmruH41LMO0iHCTQf7C/view?usp=sharing) | 16 | [DNL_nowd_ln](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/pcontext/run_fs_res101_nonlocalnowd_pcontext_seg.sh)|
