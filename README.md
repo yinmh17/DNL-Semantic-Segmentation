@@ -27,7 +27,7 @@ The disentangled Non-local block composes of a whitened pairwise term accounting
 | Cityscapes | DNL(nowd_ln) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [80.12](https://drive.google.com/drive/folders/1LZDxjdr4z7MDTuOR0r_KZEuLNRkymFf_) | 8 | [DNL_nowd_ln](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_ln_cityscapes_seg.sh)|
 | Cityscapes | DNL(temp_in) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [80.3](https://drive.google.com/drive/folders/1aDvuBFi9cFBxo87syPewpjR2eAvNUtv-) | 8 | [DNL_temp_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/cityscapes/run_fs_res101_nonlocal_in_cityscapes_seg.sh)|
 | ADE20K | DNL(temp_in) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [45.97](https://drive.google.com/drive/folders/1zTqdDcAyyWPZwTp3ktc7uDClAAwjjStc) | 16 | [DNL_temp_in](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/ade20k/run_fs_res101_nonlocalbn_ade20k_seg.sh)|
-| Pascal Context | DNL(temp_in) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [45.97](https://drive.google.com/file/d/1Z0KAd2-G1XWkvAmruH41LMO0iHCTQf7C/view?usp=sharing) | 16 | [DNL_nowd_ln](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/pcontext/run_fs_res101_nonlocalnowd_pcontext_seg.sh)|
+| Pascal Context | DNL(temp_in) | [3x3-Res101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR) | train | val | [54.5](https://drive.google.com/file/d/1Z0KAd2-G1XWkvAmruH41LMO0iHCTQf7C/view?usp=sharing) | 16 | [DNL_nowd_ln](https://github.com/yinmh17/DNL-Networks/blob/master/scripts/seg/pcontext/run_fs_res101_nonlocalnowd_pcontext_seg.sh)|
 
 
 
@@ -47,7 +47,35 @@ The disentangled Non-local block composes of a whitened pairwise term accounting
 }
 ```
 
-## Get Started
+## Install
+
+### Requirements
+
+- Linux or macOS (Windows is not currently officially supported)
+- Python 3.6+
+- PyTorch 1.0+
+- CUDA 9.0+ 
+
+a. Create a conda virtual environment and activate it.
+
+```shell
+conda create -n dnlnet python=3.6 -y
+conda activate dnlnet
+```
+b. Install PyTorch and torchvision following the [official instructions](https://pytorch.org/), e.g.,
+
+```shell
+conda install pytorch torchvision -c pytorch
+```
+
+c. Clone the repository.
+
+```shell
+git clone https://github.com/yinmh17/DNL-Networks.git
+cd DNL-Networks
+```
+
+d.Install build requirements 
 ```bash
 pip3 install -r requirements.txt
 cd exts
@@ -57,12 +85,31 @@ sh make.sh
 ## Train
 Before training, you need to preprocess your datasets following the instruction in [datasets/seg/preprocess](https://github.com/yinmh17/DNL-Networks/tree/master/datasets/seg).
 Download ImageNet pretrained model [3x3-Resnet101](https://drive.google.com/open?id=1bUzCKazlh8ElGVYWlABBAb0b0uIqFgtR)
+
+You can use following commands to train your model.
+```bash
+bash ./scripts/seg/{DATASET}/{SCRIPT_FILE_NAME}.sh train {TAG} {DATA_DIR}  {PRETRAINED_MODEL} 
+```
+
+Optional arguments:
+- `DATASET`: Name of the dataset, for example: "cityscapes", "ade20k".
+- `SCRIPT_FILE_NAME`: Name of the bash file you are going to run. Training settings are contained in the bash file.
+- `DATA_DIRECTION`: Directory of the preprocessed dataset.
+- `PRETRAINED_MODEL`: Directory of  your pretrained model.
+
+Take DNL network training on Cityscapes dataset for example, you need to run the following commands.
 ```bash
 bash ./scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_ln_cityscapes_seg.sh train tag  /torchcv/data/cityscapes   ./pretrained_models/3x3resnet101-imagenet.pth 
 ```
 
 ## Inference
+After training, you can use following commands to validate your model.
 ```bash
-bash ./scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_ln_cityscapes_seg.sh val tag  /torchcv/data/cityscapes   ./pretrained_models/3x3resnet101-imagenet.pth 
+bash ./scripts/seg/{DATASET}/{SCRIPT_FILE_NAME}.sh val {TAG} {DATA_DIR} 
+```
+
+Take DNL network validation on Cityscapes dataset for example:
+```bash
+bash ./scripts/seg/cityscapes/run_fs_res101_nonlocalnowd_ln_cityscapes_seg.sh val tag  /torchcv/data/cityscapes  
 ```
 
